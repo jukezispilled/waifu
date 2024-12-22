@@ -5,7 +5,8 @@ import { buildUrl } from "@/utils/buildUrl";
 export default function VrmViewer() {
   const { viewer } = useContext(ViewerContext);
 
-  const AVATAR_SAMPLE_B_VRM_URL = 'https://ensn6revz2uwrc6l.public.blob.vercel-storage.com/AvatarSample_B-IPh7uMREBmAV4Bud1hQ7cOmj5L6FMg.vrm';
+  const AVATAR_SAMPLE_B_VRM_URL =
+    "https://uy65dxy0a1v9lyum.public.blob.vercel-storage.com/6893614069360521226-tpgxpCg58uXFtJebcO7YQB5svDnNB3.vrm";
 
   const canvasRef = useCallback(
     (canvas: HTMLCanvasElement) => {
@@ -44,7 +45,20 @@ export default function VrmViewer() {
   );
 
   return (
-    <div className={"absolute top-0 left-0 w-screen h-[100svh] -z-10"}>
+    <div className={"absolute bottom-0 left-0 w-screen h-[100svh] -z-10"}>
+      {/* Background video */}
+      <video
+        autoPlay
+        muted
+        loop
+        playsInline
+        className="absolute top-0 left-0 w-full h-full object-cover -z-20"
+      >
+        <source src="/glitch.mp4" type="video/mp4" />
+        Your browser does not support the video tag.
+      </video>
+
+      {/* 3D Canvas */}
       <canvas ref={canvasRef} className={"h-full w-full"}></canvas>
     </div>
   );

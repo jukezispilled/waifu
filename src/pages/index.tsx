@@ -105,7 +105,7 @@ export default function Home() {
       // document.body.style.backgroundSize = 'cover';
       // document.body.style.backgroundPosition = 'center';
     } else {
-      document.body.style.backgroundImage = `url(${buildUrl("/bg-c.png")})`;
+      document.body.style.backgroundImage = `url(${buildUrl("/bg.webp")})`;
     }
   }, [backgroundImage]);
 
@@ -320,17 +320,13 @@ export default function Home() {
   return (
     <div className={`${m_plus_2.variable} ${montserrat.variable}`}>
       <Meta />
-      <Introduction
-        openAiKey={openAiKey}
-        onChangeAiKey={setOpenAiKey}
-        elevenLabsKey={elevenLabsKey}
-        onChangeElevenLabsKey={setElevenLabsKey}
-      />
       <VrmViewer />
-      <MessageInputContainer
-        isChatProcessing={chatProcessing}
-        onChatProcessStart={handleSendChat}
-      />
+      <div className="">
+        <MessageInputContainer
+          isChatProcessing={chatProcessing}
+          onChatProcessStart={handleSendChat}
+        />
+      </div>
       <Menu
         openAiKey={openAiKey}
         elevenLabsKey={elevenLabsKey}

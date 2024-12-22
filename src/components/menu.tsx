@@ -140,6 +140,7 @@ export const Menu = ({
       <div className="absolute z-10 m-24">
         <div className="grid grid-flow-col gap-[8px]">
           <IconButton
+            className="hidden"
             iconName="24/Menu"
             label="Settings"
             isProcessing={false}
@@ -147,6 +148,7 @@ export const Menu = ({
           ></IconButton>
           {showChatLog ? (
             <IconButton
+              className="hidden"
               iconName="24/CommentOutline"
               label="Conversation Log"
               isProcessing={false}
@@ -154,6 +156,7 @@ export const Menu = ({
             />
           ) : (
             <IconButton
+              className="hidden"
               iconName="24/CommentFill"
               label="Conversation Log"
               isProcessing={false}
