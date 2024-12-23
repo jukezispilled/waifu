@@ -71,7 +71,7 @@ export default function Home() {
       setElevenLabsParam(params.elevenLabsParam);
       setChatLog(params.chatLog);
     }
-    setElevenLabsKey(process.env.NEXT_PUBLIC_ELEVENKEY as string);
+    setElevenLabsKey(process.env.ELEVENLABS_API_KEY as string);
     // load openrouter key from localStorage
     const savedOpenRouterKey = localStorage.getItem('openRouterKey');
     if (savedOpenRouterKey) {
