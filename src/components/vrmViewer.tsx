@@ -52,7 +52,7 @@ export default function VrmViewer() {
         muted
         loop
         playsInline
-        className="absolute top-0 left-0 w-full h-full object-cover -z-20"
+        className="absolute top-0 left-0 w-full h-full object-cover -z-20 opacity-0"
       >
         <source src="/glitch.mp4" type="video/mp4" />
         Your browser does not support the video tag.
@@ -67,7 +67,7 @@ export default function VrmViewer() {
         muted
         loop
         playsInline
-        className="absolute top-0 left-0 w-full h-full object-cover opacity-30 pointer-events-none z-10"
+        className="absolute top-0 left-0 w-full h-full object-cover opacity-0 pointer-events-none z-10"
       >
         <source src="/glitch.mp4" type="video/mp4" />
         Your browser does not support the video tag.
