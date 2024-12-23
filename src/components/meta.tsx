@@ -5,8 +5,8 @@ export const Meta = () => {
   const title = "0xbunny";
   const description =
     "You can enjoy conversations with 3D characters using only a web browser using a microphone, text input, and speech synthesis. You can also change the character (VRM), set the personality, and adjust the voice.";
-  const imageUrl = "https://chat-vrm-window.vercel.app/ogp-en.png";
-  const faviconUrl = "/favicon.ico";  // Replace with your favicon path if different
+  const imageUrl = "/bunny.png";
+  const faviconUrl = "/bunny.ico";  // Replace with your favicon path if different
 
   return (
     <Head>
