@@ -132,27 +132,6 @@ export const Settings = ({
           </div>
           <div className="my-40">
             <div className="my-16 typography-20 font-bold">
-              Voice Selection
-            </div>
-            <div className="my-16">
-              Select among the voices in ElevenLabs (including custom voices):
-            </div>
-            <div className="my-8">
-              <select className="h-40 px-8"
-                id="select-dropdown"
-                onChange={onChangeElevenLabsVoice}
-                value={elevenLabsParam.voiceId}
-              >
-                {elevenLabsVoices.map((voice, index) => (
-                  <option key={index} value={voice.voice_id}>
-                    {voice.name}
-                  </option>
-                ))}
-              </select>
-            </div>
-          </div>
-          <div className="my-40">
-            <div className="my-16 typography-20 font-bold">
               Character Model
             </div>
             <div className="my-8">
