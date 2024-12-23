@@ -66,21 +66,6 @@ export const Settings = ({
   onChatMessage,
 }: Props) => {
 
-  const [elevenLabsVoices, setElevenLabsVoices] = useState<any[]>([]);
-
-  useEffect(() => {
-    // Check if ElevenLabs API key exists before fetching voices
-    if (elevenLabsKey) {
-      getVoices(elevenLabsKey).then((data) => {
-        console.log('getVoices');
-        console.log(data);
-
-        const voices = data.voices;
-        setElevenLabsVoices(voices);
-      });
-    }
-  }, [elevenLabsKey]); // Added elevenLabsKey as a dependency
-
   const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
