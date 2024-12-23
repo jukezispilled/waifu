@@ -2,21 +2,26 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import axios, { AxiosRequestConfig, ResponseType } from "axios";
 
 const VOICE_ID = "X4gTNLQeed3vMoHjKW48";
-const API_KEY = process.env.ELEVENLABS_API_KEY; // Securely fetch API key from environment variables.
+const API_KEY = process.env.ELEVENLABS_API_KEY;
 
 if (!API_KEY) {
   throw new Error("ELEVENLABS_API_KEY is not set in environment variables");
 }
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  // Set CORS headers
-  res.setHeader("Access-Control-Allow-Origin", "https://0xbunny.wtf"); // Allows all origins, replace '*' with specific domains if needed
-  res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS"); // Allow specific methods
-  res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization"); // Allow specific headers
+  // Set CORS headers to allow all origins
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS, PUT, DELETE, PATCH");
+  res.setHeader(
+    "Access-Control-Allow-Headers", 
+    "X-Requested-With, Content-Type, Authorization, Origin, Accept"
+  );
+  res.setHeader("Access-Control-Allow-Credentials", "true");
 
   // Handle OPTIONS method (pre-flight request)
   if (req.method === "OPTIONS") {
-    return res.status(200).end();
+    res.status(200).end();
+    return;
   }
 
   if (req.method !== "POST") {
@@ -41,23 +46,20 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       data: {
         text: message,
       },
-      responseType: "arraybuffer" as ResponseType, // Explicitly cast as ResponseType
+      responseType: "arraybuffer" as ResponseType,
     };
 
     const response = await axios.request(options);
     const audioData = response.data;
-
-    // Convert binary audio data to Base64
     const base64Audio = Buffer.from(audioData).toString("base64");
 
-    res.status(200).json({ audio: base64Audio });
+    res.status(200).json({ audio: `data:audio/mpeg;base64,${base64Audio}` });
   } catch (error) {
     console.error("Error synthesizing voice:", error);
 
-    const errorMessage =
-      axios.isAxiosError(error) && error.response
-        ? `API Error: ${error.response.status} - ${error.response.data}`
-        : "An unexpected error occurred";
+    const errorMessage = axios.isAxiosError(error) && error.response
+      ? `API Error: ${error.response.status} - ${error.response.data}`
+      : "An unexpected error occurred";
 
     res.status(500).json({ error: errorMessage });
   }
