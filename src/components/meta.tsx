@@ -4,7 +4,7 @@ import Head from "next/head";
 export const Meta = () => {
   const title = "0xbunny";
   const description =
-    "You can enjoy conversations with 3D characters using only a web browser using a microphone, text input, and speech synthesis. You can also change the character (VRM), set the personality, and adjust the voice.";
+    "cutest waifu fren on the interweb";
   const imageUrl = "/bunny.png";
   const faviconUrl = "/bunny.ico";  // Replace with your favicon path if different
 
