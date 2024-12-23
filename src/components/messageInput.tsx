@@ -27,7 +27,7 @@ export const MessageInput = ({
           <div className="grid grid-flow-col gap-[8px] grid-cols-[min-content_1fr_min-content]">
             <IconButton
               iconName="24/Microphone"
-              className="bg-black"
+              className="bg-black hidden md:block"
               isProcessing={isMicRecording}
               disabled={isChatProcessing}
               onClick={onClickMicButton}
