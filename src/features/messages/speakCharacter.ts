@@ -58,7 +58,7 @@ export const fetchAudio = async (
 ): Promise<ArrayBuffer> => {
   try {
     // Ensure synthesizeVoice returns a structured response
-    const ttsResponse = await synthesizeVoice(talk.message, elevenLabsKey, elevenLabsParam);
+    const ttsResponse = await synthesizeVoice(talk.message);
 
     if (typeof ttsResponse !== "object" || !ttsResponse.audio) {
       throw new Error("Invalid response from synthesizeVoice");
