@@ -5,6 +5,11 @@ import { Screenplay } from "./messages";
 import { Talk } from "./messages";
 import { ElevenLabsParam } from "../constants/elevenLabsParam";
 
+// Define the expected response type from synthesizeVoice
+interface TTSResponse {
+  audio: string;  // URL or base64 string of the audio
+}
+
 interface Callback {
   (): void;
 }
@@ -19,32 +24,36 @@ const createSpeakCharacter = () => {
     elevenLabsKey: string,
     elevenLabsParam: ElevenLabsParam,
     viewer: Viewer,
-    onStart?: Callback, // Type onStart as an optional callback
-    onComplete?: Callback // Type onComplete as an optional callback
+    onStart?: Callback,
+    onComplete?: Callback
   ) => {
     const fetchPromise = prevFetchPromise.then(async () => {
       const now = Date.now();
       if (now - lastTime < 1000) {
         await wait(1000 - (now - lastTime));
       }
-
-      const buffer = await fetchAudio(screenplay.talk, elevenLabsKey, elevenLabsParam).catch(() => null);
+      const buffer = await fetchAudio(
+        screenplay.talk,
+        elevenLabsKey,
+        elevenLabsParam
+      ).catch(() => null);
       lastTime = Date.now();
       return buffer;
     });
 
     prevFetchPromise = fetchPromise;
-    prevSpeakPromise = Promise.all([fetchPromise, prevSpeakPromise]).then(([audioBuffer]) => {
-      onStart?.(); // Safe to call onStart now since it's typed as a function
-      if (!audioBuffer) {
-        // Pass along screenplay to change avatar expression
-        return viewer.model?.speak(null, screenplay);
+    prevSpeakPromise = Promise.all([fetchPromise, prevSpeakPromise]).then(
+      ([audioBuffer]) => {
+        onStart?.();
+        if (!audioBuffer) {
+          return viewer.model?.speak(null, screenplay);
+        }
+        return viewer.model?.speak(audioBuffer, screenplay);
       }
-      return viewer.model?.speak(audioBuffer, screenplay);
-    });
+    );
 
     prevSpeakPromise.then(() => {
-      onComplete?.(); // Safe to call onComplete
+      onComplete?.();
     });
   };
 };
@@ -57,17 +66,15 @@ export const fetchAudio = async (
   elevenLabsParam: ElevenLabsParam
 ): Promise<ArrayBuffer> => {
   try {
-    // Ensure synthesizeVoice returns a structured response
-    const ttsResponse = await synthesizeVoice(talk.message);
-
-    if (typeof ttsResponse !== "object" || !ttsResponse.audio) {
+    const ttsResponse = await synthesizeVoice(talk.message) as unknown as TTSResponse;
+    
+    if (!ttsResponse || typeof ttsResponse !== "object" || !ttsResponse.audio) {
       throw new Error("Invalid response from synthesizeVoice");
     }
 
     const audioUrl = ttsResponse.audio;
-
     const response = await fetch(audioUrl);
-
+    
     if (!response.ok) {
       throw new Error(`Failed to fetch audio: ${response.statusText}`);
     }
