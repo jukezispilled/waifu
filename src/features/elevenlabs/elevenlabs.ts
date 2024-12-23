@@ -4,9 +4,8 @@ import axios from "axios";
 export async function synthesizeVoice(message: string) {
   try {
     const response = await axios.post("https://schiza.vercel.app/api/synthesizeVoice", { message });
-    const audioBase64 = response.data.audio;
-    const audioUrl = `data:audio/mpeg;base64,${audioBase64}`;
-    return audioUrl;
+    // Directly return the base64 string instead of wrapping it in an 'audio' field
+    return response.data.audio;
   } catch (error) {
     console.error("Error synthesizing voice:", error);
     throw error;

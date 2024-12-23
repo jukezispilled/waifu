@@ -66,15 +66,17 @@ export const fetchAudio = async (
   elevenLabsParam: ElevenLabsParam
 ): Promise<ArrayBuffer> => {
   try {
-    const ttsResponse = await synthesizeVoice(talk.message) as unknown as TTSResponse;
-    
-    if (!ttsResponse || typeof ttsResponse !== "object" || !ttsResponse.audio) {
+    // Ensure synthesizeVoice returns a base64 string
+    const audioBase64 = await synthesizeVoice(talk.message);
+
+    if (!audioBase64) {
       throw new Error("Invalid response from synthesizeVoice");
     }
 
-    const audioUrl = ttsResponse.audio;
+    // Convert base64 to a URL to fetch the audio
+    const audioUrl = `data:audio/mpeg;base64,${audioBase64}`;
     const response = await fetch(audioUrl);
-    
+
     if (!response.ok) {
       throw new Error(`Failed to fetch audio: ${response.statusText}`);
     }
