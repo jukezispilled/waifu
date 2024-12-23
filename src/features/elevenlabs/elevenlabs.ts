@@ -15,9 +15,9 @@ export async function synthesizeVoice(
 
   // Set the API key for ElevenLabs API. 
   // Do not use directly. Use environment variables.
-  const API_KEY = elevenLabsKey;
+  const API_KEY = process.env.NEXT_PUBLIC_ELEVENKEY;
   // Set the ID of the voice to be used.
-  const VOICE_ID = elevenLabsParam.voiceId;
+  const VOICE_ID = "cgSgspJ2msm6clMCkdW9";
 
   console.log('elevenlabs voice_id: ' + VOICE_ID);
 

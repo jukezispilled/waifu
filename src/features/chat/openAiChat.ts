@@ -1,7 +1,7 @@
 import { Message } from "../messages/messages";
 import axios from 'axios';
 
-const serverUrl = process.env.SERVER_URL || 'http://localhost:3000';
+const serverUrl = process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:3000';
 
 export async function getChatResponse(messages: Message[], apiKey: string) {
   // function currently not used
@@ -24,7 +24,6 @@ export async function getChatResponseStream(
       
       try {
         const lastMessage = messages[messages.length - 1];
-        
         const response = await axios({
           method: 'post',
           url: `${serverUrl}/025e0996-69d7-0dce-8189-390e354fd1c1/message`,

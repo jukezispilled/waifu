@@ -6,7 +6,7 @@ export default function VrmViewer() {
   const { viewer } = useContext(ViewerContext);
 
   const AVATAR_SAMPLE_B_VRM_URL =
-    "https://uy65dxy0a1v9lyum.public.blob.vercel-storage.com/6893614069360521226-tpgxpCg58uXFtJebcO7YQB5svDnNB3.vrm";
+    "https://uy65dxy0a1v9lyum.public.blob.vercel-storage.com/4479012243752901829-2boobwLw0SslOlaVggY5FABF9z4kqY.vrm";
 
   const canvasRef = useCallback(
     (canvas: HTMLCanvasElement) => {
@@ -60,6 +60,18 @@ export default function VrmViewer() {
 
       {/* 3D Canvas */}
       <canvas ref={canvasRef} className={"h-full w-full"}></canvas>
+
+      {/* Overlay Video */}
+      <video
+        autoPlay
+        muted
+        loop
+        playsInline
+        className="absolute top-0 left-0 w-full h-full object-cover opacity-30 pointer-events-none z-10"
+      >
+        <source src="/glitch.mp4" type="video/mp4" />
+        Your browser does not support the video tag.
+      </video>
     </div>
   );
 }
