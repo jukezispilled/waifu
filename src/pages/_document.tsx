@@ -5,7 +5,7 @@ export default function Document() {
   return (
     <Html lang="ja">
       <Head />
-      <body style={{ backgroundImage: `url(${buildUrl("/b.gif")})` }}>
+      <body style={{ backgroundImage: `url(${buildUrl("/bg-c.png")})` }}>
         <Main />
         <NextScript />
       </body>
