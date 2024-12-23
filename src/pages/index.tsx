@@ -102,7 +102,7 @@ export default function Home() {
       // document.body.style.backgroundSize = 'cover';
       // document.body.style.backgroundPosition = 'center';
     } else {
-      document.body.style.backgroundImage = `url(${buildUrl("/p.gif")})`;
+      document.body.style.backgroundImage = `url(${buildUrl("/b.gif")})`;
     }
   }, [backgroundImage]);
 
