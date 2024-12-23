@@ -58,6 +58,22 @@ export default function VrmViewer() {
         Your browser does not support the video tag.
       </video>
 
+      <div className="absolute top-[10px] right-[10px]">
+      <div style={{
+        backgroundColor: 'white', 
+        padding: '0.5rem', 
+        borderRadius: '9999px', 
+        fontWeight: 'bold'
+      }}>
+        <span>
+          <a href="https://x.com/bunnygirl0x">
+            @bunnygirl0x
+          </a>
+        </span>
+      </div>
+
+      </div>
+
       {/* 3D Canvas */}
       <canvas ref={canvasRef} className={"h-full w-full"}></canvas>
 
