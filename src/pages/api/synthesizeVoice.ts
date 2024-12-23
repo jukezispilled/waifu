@@ -1,4 +1,3 @@
-// pages/api/synthesizeVoice.ts
 import type { NextApiRequest, NextApiResponse } from "next";
 import axios, { AxiosRequestConfig, ResponseType } from "axios";
 
@@ -10,6 +9,16 @@ if (!API_KEY) {
 }
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+  // Set CORS headers
+  res.setHeader("Access-Control-Allow-Origin", "https://0xbunny.wtf"); // Allows all origins, replace '*' with specific domains if needed
+  res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS"); // Allow specific methods
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization"); // Allow specific headers
+
+  // Handle OPTIONS method (pre-flight request)
+  if (req.method === "OPTIONS") {
+    return res.status(200).end();
+  }
+
   if (req.method !== "POST") {
     return res.status(405).json({ error: "Method not allowed" });
   }
