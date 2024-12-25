@@ -26,7 +26,7 @@ export async function getChatResponseStream(
         const lastMessage = messages[messages.length - 1];
         const response = await axios({
           method: 'post',
-          url: `${serverUrl}/025e0996-69d7-0dce-8189-390e354fd1c1/message`,
+          url: `${serverUrl}/0492e0df-4007-0c04-b194-3dc1aadb32c6/message`,
           data: {
             text: lastMessage.content,
             roomId: roomId,
