@@ -6,7 +6,7 @@ export default function VrmViewer() {
   const { viewer } = useContext(ViewerContext);
 
   const AVATAR_SAMPLE_B_VRM_URL =
-    "https://uy65dxy0a1v9lyum.public.blob.vercel-storage.com/3151472595505291633-jOImpfmcnoOtWlRYo4NHyKyJS9TPQZ.vrm";
+    "https://uy65dxy0a1v9lyum.public.blob.vercel-storage.com/5728228938663764438-3r071TWAXYRyM6KuSldXmcYoJzSBXe.vrm%20copy%202";
 
   const canvasRef = useCallback(
     (canvas: HTMLCanvasElement) => {
