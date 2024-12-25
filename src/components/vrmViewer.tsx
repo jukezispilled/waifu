@@ -66,8 +66,8 @@ export default function VrmViewer() {
         fontWeight: 'bold'
       }}>
         <span>
-          <a href="https://x.com/bunnygirl0x">
-            @bunnygirl0x
+          <a href="https://x.com/">
+            @
           </a>
         </span>
       </div>
