@@ -2,11 +2,11 @@ import { buildUrl } from "@/utils/buildUrl";
 import Head from "next/head";
 
 export const Meta = () => {
-  const title = "0xbunny";
+  const title = "fuzz";
   const description =
-    "cutest waifu fren on the interweb";
-  const imageUrl = "/bunny.png";
-  const faviconUrl = "/bunny.ico";  // Replace with your favicon path if different
+    "your cat fren from the internet";
+  const imageUrl = "/f.png";
+  const faviconUrl = "/f.ico";  // Replace with your favicon path if different
 
   return (
     <Head>
