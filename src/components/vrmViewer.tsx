@@ -73,7 +73,7 @@ export default function VrmViewer() {
         {/* Badge */}
         <div style={{ position: "absolute", top: "10px", right: "10px" }}>
           <Window>
-            <a href="https://x.com/fuzzfren" className="font-mono" style={{ color: "black", padding: "2px" }}>
+            <a href="https://x.com/fuzzfren" className="font-mono font-bold" style={{ color: "black", padding: "2px" }}>
               @fuzzfren
             </a>
           </Window>
