@@ -36,7 +36,7 @@ export const MessageInput = ({
   return (
     <ThemeProvider theme={original}>
       <GlobalStyles />
-      <Window style={{ position: 'fixed', bottom: 0, width: '100%', zIndex: 20 }}>
+      <Window className="font-mono" style={{ position: 'fixed', bottom: 0, width: '100%', zIndex: 20 }}>
         <WindowContent>
           <Panel
             variant="well"
