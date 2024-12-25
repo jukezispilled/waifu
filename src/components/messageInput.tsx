@@ -1,4 +1,17 @@
-import { IconButton } from "./iconButton";
+import React from 'react';
+import { createGlobalStyle, ThemeProvider } from 'styled-components';
+import { TextField, Button, Window, WindowContent, Panel } from 'react95';
+import original from 'react95/dist/themes/original';
+import { IconButton } from './iconButton';
+
+const GlobalStyles = createGlobalStyle`
+  body {
+    margin: 0;
+    padding: 0;
+    font-family: 'ms_sans_serif', sans-serif;
+    background-color: #008080;
+  }
+`;
 
 type Props = {
   userMessage: string;
@@ -11,6 +24,7 @@ type Props = {
   onClickSendButton: (event: React.MouseEvent<HTMLButtonElement>) => void;
   onClickMicButton: (event: React.MouseEvent<HTMLButtonElement>) => void;
 };
+
 export const MessageInput = ({
   userMessage,
   isMicRecording,
@@ -21,37 +35,47 @@ export const MessageInput = ({
   onClickSendButton,
 }: Props) => {
   return (
-    <div className="absolute bottom-0 z-20 w-screen">
-      <div className="text-black">
-        <div className="mx-auto max-w-4xl p-16">
-          <div className="grid grid-flow-col gap-[8px] grid-cols-[min-content_1fr_min-content]">
-            <IconButton
-              iconName="24/Microphone"
-              className="bg-black"
-              isProcessing={isMicRecording}
+    <ThemeProvider theme={original}>
+      <GlobalStyles />
+      <Window style={{ position: 'fixed', bottom: 0, width: '100%', zIndex: 20 }}>
+        <WindowContent>
+          <Panel
+            variant="well"
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px',
+              padding: '8px',
+            }}
+          >
+            <Button
               disabled={isChatProcessing}
               onClick={onClickMicButton}
-            />
-            <input
-              type="text"
+              active={isMicRecording}
+              style={{ minWidth: '40px', height: '40px' }}
+            >
+              🎤
+            </Button>
+
+            <TextField
               placeholder="Message"
+              value={userMessage}
               onChange={onChangeUserMessage}
               onKeyDown={onKeyDownUserMessage}
+              fullWidth
               disabled={isChatProcessing}
-              className="bg-surface1 hover:bg-surface1-hover focus:bg-surface1 disabled:bg-surface1-disabled disabled:text-primary-disabled rounded-16 w-full px-16 text-text-primary typography-16 font-M_PLUS_2 font-bold disabled outline-none"
-              value={userMessage}
-            ></input>
+            />
 
-            <IconButton
-              iconName="24/Send"
-              className="bg-black"
-              isProcessing={isChatProcessing}
+            <Button
               disabled={isChatProcessing || !userMessage}
               onClick={onClickSendButton}
-            />
-          </div>
-        </div>
-      </div>
-    </div>
+              style={{ minWidth: '40px', height: '40px' }}
+            >
+              📤
+            </Button>
+          </Panel>
+        </WindowContent>
+      </Window>
+    </ThemeProvider>
   );
 };
