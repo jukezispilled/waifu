@@ -67,7 +67,7 @@ export default function VrmViewer() {
       }}>
         <span>
           <a href="https://x.com/">
-            @
+            @fuzzfren
           </a>
         </span>
       </div>
