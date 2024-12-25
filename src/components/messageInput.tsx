@@ -1,8 +1,7 @@
 import React from 'react';
 import { createGlobalStyle, ThemeProvider } from 'styled-components';
-import { TextField, Button, Window, WindowContent, Panel } from 'react95';
+import { TextField, Button, Window, WindowContent, Panel, Hourglass } from 'react95';
 import original from 'react95/dist/themes/original';
-import { IconButton } from './iconButton';
 
 const GlobalStyles = createGlobalStyle`
   body {
@@ -66,13 +65,17 @@ export const MessageInput = ({
               disabled={isChatProcessing}
             />
 
-            <Button
-              disabled={isChatProcessing || !userMessage}
-              onClick={onClickSendButton}
-              style={{ minWidth: '40px', height: '40px' }}
-            >
-              📤
-            </Button>
+            {isChatProcessing ? (
+              <Hourglass style={{ width: '40px', height: '40px' }} />
+            ) : (
+              <Button
+                disabled={!userMessage}
+                onClick={onClickSendButton}
+                style={{ minWidth: '40px', height: '40px' }}
+              >
+                📤
+              </Button>
+            )}
           </Panel>
         </WindowContent>
       </Window>
