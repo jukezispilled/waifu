@@ -2,7 +2,7 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import axios, { AxiosRequestConfig, ResponseType } from "axios";
 
-const VOICE_ID = "3bNnUZueMinhUFZja76x";
+const VOICE_ID = "UBLzt6pRXVNsyAFx6AiS";
 const API_KEY = process.env.ELEVENLABS_API_KEY; // Securely fetch API key from environment variables.
 
 if (!API_KEY) {
