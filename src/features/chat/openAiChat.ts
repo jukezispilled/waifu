@@ -1,7 +1,7 @@
 import { Message } from "../messages/messages";
 import axios from 'axios';
 
-const serverUrl = 'https://cfc6-2603-7080-1300-7196-f525-d18f-f949-6f34.ngrok-free.app';
+const serverUrl = 'https://ae9d-2603-7080-1300-7196-f525-d18f-f949-6f34.ngrok-free.app';
 
 export async function getChatResponse(messages: Message[], apiKey: string) {
   // function currently not used
