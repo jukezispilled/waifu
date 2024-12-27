@@ -18,7 +18,7 @@ export default function VrmViewer() {
   const { viewer } = useContext(ViewerContext);
 
   const AVATAR_SAMPLE_B_VRM_URL =
-    "https://uy65dxy0a1v9lyum.public.blob.vercel-storage.com/5728228938663764438-3r071TWAXYRyM6KuSldXmcYoJzSBXe.vrm%20copy%202";
+    "https://uy65dxy0a1v9lyum.public.blob.vercel-storage.com/8968252576836874919-gFfOUXnnFwaKkpUoIbeQwxahqmKw5X.vrm";
 
   const canvasRef = useCallback(
     (canvas: HTMLCanvasElement) => {
@@ -69,15 +69,6 @@ export default function VrmViewer() {
           <source src="/glitch.mp4" type="video/mp4" />
           Your browser does not support the video tag.
         </video>
-
-        {/* Badge */}
-        <div style={{ position: "absolute", top: "10px", right: "10px" }}>
-          <Window>
-            <a href="https://x.com/fuzzfren" className="font-mono font-bold" style={{ color: "black", padding: "2px" }}>
-              @fuzzfren
-            </a>
-          </Window>
-        </div>
 
         {/* 3D Canvas */}
         <canvas ref={canvasRef} style={{ width: "100%", height: "100%" }}></canvas>

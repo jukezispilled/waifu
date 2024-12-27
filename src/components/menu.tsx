@@ -193,9 +193,11 @@ export const Menu = ({
           onChangeOpenRouterKey={onChangeOpenRouterKey}
         />
       )}
-      {!showChatLog && assistantMessage && (
-        <AssistantText message={assistantMessage} />
-      )}
+      <div className="h-screen w-screen relative">
+        {!showChatLog && assistantMessage && (
+          <AssistantText message={assistantMessage} />
+        )}
+      </div>
       <input
         type="file"
         className="hidden"

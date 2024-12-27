@@ -1,7 +1,7 @@
 import { Message } from "../messages/messages";
 import axios from 'axios';
 
-const serverUrl = 'https://3d82-2603-7080-1300-7196-e1fd-753c-a42e-be4a.ngrok-free.app';
+const serverUrl = 'https://cfc6-2603-7080-1300-7196-f525-d18f-f949-6f34.ngrok-free.app';
 
 export async function getChatResponse(messages: Message[], apiKey: string) {
   // function currently not used
@@ -26,7 +26,7 @@ export async function getChatResponseStream(
         const lastMessage = messages[messages.length - 1];
         const response = await axios({
           method: 'post',
-          url: `${serverUrl}/0492e0df-4007-0c04-b194-3dc1aadb32c6/message`,
+          url: `${serverUrl}/d2b30cf1-8a68-034e-970e-dff50e670344/message`,
           data: {
             text: lastMessage.content,
             roomId: roomId,
