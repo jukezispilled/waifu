@@ -96,16 +96,6 @@ export default function Home() {
     );
   }, [systemPrompt, elevenLabsParam, chatLog]);
 
-  useEffect(() => {
-    if (backgroundImage) {
-      document.body.style.backgroundImage = `url(${backgroundImage})`;
-      // document.body.style.backgroundSize = 'cover';
-      // document.body.style.backgroundPosition = 'center';
-    } else {
-      document.body.style.backgroundImage = `url(${buildUrl("/bg1.gif")})`;
-    }
-  }, [backgroundImage]);
-
   const handleChangeChatLog = useCallback(
     (targetIndex: number, text: string) => {
       const newChatLog = chatLog.map((v: Message, i) => {
