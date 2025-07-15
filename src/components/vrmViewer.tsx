@@ -9,7 +9,6 @@ const GlobalStyles = createGlobalStyle`
   body {
     margin: 0;
     padding: 0;
-    font-family: 'ms_sans_serif', sans-serif;
     background-color: #008080;
   }
 `;
@@ -46,13 +45,13 @@ export default function VrmViewer() {
   );
 
   return (
-    <ThemeProvider theme={original}>
+    <div>
       <GlobalStyles />
-      <div className="bg-black" style={{ position: "absolute", bottom: 0, left: 0, width: "100%", height: "100vh", zIndex: -10 }}>
+      <div className="bg-[#0F0F0F]" style={{ position: "absolute", bottom: 0, left: 0, width: "100%", height: "100vh", zIndex: -10 }}>
 
         {/* 3D Canvas */}
         <canvas ref={canvasRef} style={{ width: "100%", height: "100%" }}></canvas>
       </div>
-    </ThemeProvider>
+    </div>
   );
 }
