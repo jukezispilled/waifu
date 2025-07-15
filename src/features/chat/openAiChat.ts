@@ -32,7 +32,7 @@ export async function getChatResponse(messages: Message[], apiKey: string) {
 }
 
 export async function getChatResponseStream(
-  message: string,
+  messages: Message[], // Changed from string to Message[]
   apiKey: string,
   openRouterKey: string
 ) {
@@ -66,7 +66,7 @@ export async function getChatResponseStream(
             // "model": "cohere/command-r-plus",
             // "model": "anthropic/claude-3.5-sonnet:beta",
             "model": "x-ai/grok-4",
-            "messages": [{ role: "user", content: message }],
+            "messages": messages, // Now using the messages array directly
             "temperature": 0.7,
             "max_tokens": 200,
             "stream": true,
