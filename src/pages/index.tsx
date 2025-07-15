@@ -20,6 +20,7 @@ import { ElevenLabsParam, DEFAULT_ELEVEN_LABS_PARAM } from "@/features/constants
 import { buildUrl } from "@/utils/buildUrl";
 import { websocketService } from '../services/websocketService';
 import { MessageMiddleOut } from "@/features/messages/messageMiddleOut";
+import { CopyToClipboard } from "@/components/copy";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -302,6 +303,7 @@ export default function Home() {
     <div className={inter.className}>
       <Meta />
       <VrmViewer />
+      <CopyToClipboard textToCopy="XXXXXXXXXXXXXXXX" />
       <div className="">
         <MessageInputContainer
           isChatProcessing={chatProcessing}
