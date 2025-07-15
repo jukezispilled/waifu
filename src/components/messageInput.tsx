@@ -26,7 +26,7 @@ export const MessageInput = ({
     "make me feel better",
     "do I turn you on?", 
     "fuck yea",
-    "roleplay with me"
+    "roleplay like my gf"
   ];
 
   const handleTemplateClick = (template: string) => {
