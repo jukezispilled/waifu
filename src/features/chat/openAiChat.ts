@@ -32,7 +32,7 @@ export async function getChatResponse(messages: Message[], apiKey: string) {
 }
 
 export async function getChatResponseStream(
-  messages: Message[],
+  message: string,
   apiKey: string,
   openRouterKey: string
 ) {
@@ -42,11 +42,6 @@ export async function getChatResponseStream(
     throw new Error("Invalid API Key");
   }
   */
-
-  console.log('getChatResponseStream');
-
-  console.log('messages');
-  console.log(messages);
 
   const stream = new ReadableStream({
     async start(controller: ReadableStreamDefaultController) {
@@ -71,7 +66,7 @@ export async function getChatResponseStream(
             // "model": "cohere/command-r-plus",
             // "model": "anthropic/claude-3.5-sonnet:beta",
             "model": "x-ai/grok-4",
-            "messages": messages,
+            "messages": [{ role: "user", content: message }],
             "temperature": 0.7,
             "max_tokens": 200,
             "stream": true,
@@ -85,21 +80,14 @@ export async function getChatResponseStream(
               const { done, value } = await reader.read();
               if (done) break;
 
-              // console.log('value');
-              // console.log(value);
-
               // Assuming the stream is text, convert the Uint8Array to a string
               let chunk = new TextDecoder().decode(value);
               // Process the chunk here (e.g., append it to the controller for streaming to the client)
-              // console.log(chunk); // Or handle the chunk as needed
 
               // split the chunk into lines
               let lines = chunk.split('\n');
-              // console.log('lines');
-              // console.log(lines);
 
               const SSE_COMMENT = ": OPENROUTER PROCESSING";
-
 
               // filter out lines that start with SSE_COMMENT
               lines = lines.filter((line) => !line.trim().startsWith(SSE_COMMENT));
@@ -111,28 +99,23 @@ export async function getChatResponseStream(
               const dataLines = lines.filter(line => line.startsWith("data:"));
 
               // Extract and parse the JSON from each data line
-              const messages = dataLines.map(line => {
+              const parsedMessages = dataLines.map(line => {
                 // Remove the "data: " prefix and parse the JSON
                 const jsonStr = line.substring(5); // "data: ".length == 5
                 return JSON.parse(jsonStr);
               });
 
-              // console.log('messages');
-              // console.log(messages);
-
               // loop through messages and enqueue them to the controller
 
               try {
-                messages.forEach((message) => {
+                parsedMessages.forEach((message) => {
                   const content = message.choices[0].delta.content;
 
                   controller.enqueue(content);
                 });
               } catch (error) {
-                // log the messages
-                console.log('error processing messages:');
-                console.log(messages);
-
+                // log error for debugging if needed
+                console.error('Error processing stream messages:', error);
                 throw error;
               }
 
@@ -140,7 +123,6 @@ export async function getChatResponseStream(
               // const parsedChunk = JSON.parse(chunk);
               // Access the content
               // const content = parsedChunk.choices[0].delta.content;
-              // console.log(content); // Use the content as needed
 
               // enqueue the content to the controller
               // controller.enqueue(content);
