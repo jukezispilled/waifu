@@ -70,7 +70,7 @@ export async function getChatResponseStream(
             // "model": "openai/gpt-3.5-turbo",
             // "model": "cohere/command-r-plus",
             // "model": "anthropic/claude-3.5-sonnet:beta",
-            "model": "microsoft/wizardlm-2-8x22b",
+            "model": "x-ai/grok-3",
             "messages": messages,
             "temperature": 0.7,
             "max_tokens": 200,
