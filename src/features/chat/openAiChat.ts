@@ -72,6 +72,8 @@ export async function getChatResponseStream(
             // "model": "anthropic/claude-3.5-sonnet:beta",
             "model": "x-ai/grok-4",
             "messages": messages,
+            "temperature": 0.7,
+            "max_tokens": 200,
             "stream": true,
           })
         });
