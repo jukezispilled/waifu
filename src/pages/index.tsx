@@ -334,31 +334,6 @@ export default function Home() {
           onChatProcessStart={handleSendChat}
         />
       </div>
-      <Menu
-        openAiKey={openAiKey}
-        elevenLabsKey={elevenLabsKey}
-        ollamaUrl={ollamaUrl}
-        ollamaModel={ollamaModel}
-        systemPrompt={systemPrompt}
-        chatLog={chatLog}
-        elevenLabsParam={elevenLabsParam}
-        koeiroParam={koeiroParam}
-        assistantMessage={assistantMessage}
-        onChangeAiKey={setOpenAiKey}
-        onChangeElevenLabsKey={setElevenLabsKey}
-        onChangeSystemPrompt={setSystemPrompt}
-        onChangeChatLog={handleChangeChatLog}
-        onChangeElevenLabsParam={setElevenLabsParam}
-        onChangeKoeiromapParam={setKoeiroParam}
-        handleClickResetChatLog={() => setChatLog([])}
-        handleClickResetSystemPrompt={() => setSystemPrompt(SYSTEM_PROMPT)}
-        backgroundImage={backgroundImage}
-        onChangeBackgroundImage={setBackgroundImage}
-        onTokensUpdate={handleTokensUpdate}
-        onChatMessage={handleSendChat}
-        onChangeOllamaUrl={handleOllamaUrlChange}
-        onChangeOllamaModel={handleOllamaModelChange}
-      />
       <GitHubLink />
     </div>
   );
