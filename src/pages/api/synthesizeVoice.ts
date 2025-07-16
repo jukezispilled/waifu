@@ -7,6 +7,7 @@ const VOICE_IDS = {
   1: "XJ2fW4ybq7HouelYYGcL", // Current voice ID for VRM 1
   2: "2bk7ULW9HfwvcIbMWod0",    // Replace with actual voice ID for VRM 2
   3: "6OzrBCQf8cjERkYgzSg8",    // Replace with actual voice ID for VRM 3
+  4: "6OzrBCQf8cjERkYgzSg8",
 };
 
 const API_KEY = process.env.ELEVENLABS_API_KEY;
