@@ -37,7 +37,14 @@ export default function Home() {
   const { viewer } = useContext(ViewerContext);
 
   const [systemPrompt, setSystemPrompt] = useState(SYSTEM_PROMPT);
-  const [openAiKey, setOpenAiKey] = useState(""); // Keep this for backwards compatibility if needed
+  const [apiKey, setApiKey] = useState<string>(() => {
+    // Try to load from localStorage first, then fallback to env variable
+    if (typeof window !== 'undefined') {
+      const savedKey = localStorage.getItem('apiKey') || localStorage.getItem('claudeKey'); // Support both for migration
+      if (savedKey) return savedKey;
+    }
+    return process.env.NEXT_PUBLIC_CLAUDE_API_KEY || '';
+  });
   const [elevenLabsKey, setElevenLabsKey] = useState("");
   const [elevenLabsParam, setElevenLabsParam] = useState<ElevenLabsParam>(DEFAULT_ELEVEN_LABS_PARAM);
   const [koeiroParam, setKoeiroParam] = useState<KoeiroParam>(DEFAULT_KOEIRO_PARAM);
@@ -47,16 +54,7 @@ export default function Home() {
   const [backgroundImage, setBackgroundImage] = useState<string>('');
   const [restreamTokens, setRestreamTokens] = useState<any>(null);
   const [isPlayingAudio, setIsPlayingAudio] = useState(false);
-  // needed because AI speaking could involve multiple audios being played in sequence
   const [isAISpeaking, setIsAISpeaking] = useState(false);
-  const [claudeKey, setClaudeKey] = useState<string>(() => {
-    // Try to load from localStorage first, then fallback to env variable
-    if (typeof window !== 'undefined') {
-      const savedKey = localStorage.getItem('claudeKey');
-      if (savedKey) return savedKey;
-    }
-    return process.env.NEXT_PUBLIC_CLAUDE_API_KEY || '';
-  });
 
   useEffect(() => {
     if (window.localStorage.getItem("chatVRMParams")) {
@@ -69,12 +67,17 @@ export default function Home() {
     }
     setElevenLabsKey(process.env.ELEVENLABS_API_KEY as string);
     
-    // Load claude key from localStorage, fallback to env
-    const savedClaudeKey = localStorage.getItem('claudeKey');
-    if (savedClaudeKey) {
-      setClaudeKey(savedClaudeKey);
+    // Load API key from localStorage, fallback to env
+    const savedApiKey = localStorage.getItem('apiKey') || localStorage.getItem('claudeKey'); // Support migration
+    if (savedApiKey) {
+      setApiKey(savedApiKey);
+      // Migrate old claudeKey to apiKey
+      if (localStorage.getItem('claudeKey') && !localStorage.getItem('apiKey')) {
+        localStorage.setItem('apiKey', savedApiKey);
+        localStorage.removeItem('claudeKey');
+      }
     } else if (process.env.NEXT_PUBLIC_CLAUDE_API_KEY) {
-      setClaudeKey(process.env.NEXT_PUBLIC_CLAUDE_API_KEY);
+      setApiKey(process.env.NEXT_PUBLIC_CLAUDE_API_KEY);
     }
     
     const savedBackground = localStorage.getItem('backgroundImage');
@@ -89,11 +92,8 @@ export default function Home() {
         "chatVRMParams",
         JSON.stringify({ systemPrompt, elevenLabsParam, chatLog })
       )
-
-      // store separately to be backward compatible with local storage data
       window.localStorage.setItem("elevenLabsKey", elevenLabsKey);
-    }
-    );
+    });
   }, [systemPrompt, elevenLabsParam, chatLog]);
 
   const handleChangeChatLog = useCallback(
@@ -101,15 +101,11 @@ export default function Home() {
       const newChatLog = chatLog.map((v: Message, i) => {
         return i === targetIndex ? { role: v.role, content: text } : v;
       });
-
       setChatLog(newChatLog);
     },
     [chatLog]
   );
 
-  /**
-   * 文ごとに音声を直接でリクエストしながら再生する
-   */
   const handleSpeakAi = useCallback(
     async (
       screenplay: Screenplay,
@@ -118,7 +114,7 @@ export default function Home() {
       onStart?: () => void,
       onEnd?: () => void
     ) => {
-      setIsAISpeaking(true);  // Set speaking state before starting
+      setIsAISpeaking(true);
       try {
         await speakCharacter(
           screenplay, 
@@ -139,29 +135,24 @@ export default function Home() {
       } catch (error) {
         console.error('Error during AI speech:', error);
       } finally {
-        setIsAISpeaking(false);  // Ensure speaking state is reset even if there's an error
+        setIsAISpeaking(false);
       }
     },
     [viewer]
   );
 
-  /**
-   * アシスタントとの会話を行う
-   */
   const handleSendChat = useCallback(
     async (text: string) => {
       const newMessage = text;
       if (newMessage == null) return;
 
       setChatProcessing(true);
-      // Add user's message to chat log
       const messageLog: Message[] = [
         ...chatLog,
         { role: "user", content: newMessage },
       ];
       setChatLog(messageLog);
 
-      // Process messages through MessageMiddleOut
       const messageProcessor = new MessageMiddleOut();
       const processedMessages = messageProcessor.process([
         {
@@ -171,15 +162,13 @@ export default function Home() {
         ...messageLog,
       ]);
 
-      let localClaudeKey = claudeKey;
-      if (!localClaudeKey) {
-        console.error('No Claude API key provided');
+      if (!apiKey) {
+        console.error('No API key provided');
         setChatProcessing(false);
         return;
       }
 
-      // Now pass claudeKey as the main apiKey parameter, and empty string for the unused openRouterKey
-      const stream = await getChatResponseStream(processedMessages, localClaudeKey, "").catch(
+      const stream = await getChatResponseStream(processedMessages, apiKey, "").catch(
         (e) => {
           console.error(e);
           return null;
@@ -202,32 +191,25 @@ export default function Home() {
 
           receivedMessage += value;
 
-          // 返答内容のタグ部分の検出
           const tagMatch = receivedMessage.match(/^\[(.*?)\]/);
           if (tagMatch && tagMatch[0]) {
             tag = tagMatch[0];
             receivedMessage = receivedMessage.slice(tag.length);
-
-            console.log('tag:');
-            console.log(tag);
+            console.log('tag:', tag);
           }
 
-          // 返答を一単位で切り出して処理する
           const sentenceMatch = receivedMessage.match(
             /^(.+[。．！？\n.!?]|.{10,}[、,])/
           );
           if (sentenceMatch && sentenceMatch[0]) {
             const sentence = sentenceMatch[0];
             sentences.push(sentence);
-
-            console.log('sentence:');
-            console.log(sentence);
+            console.log('sentence:', sentence);
 
             receivedMessage = receivedMessage
               .slice(sentence.length)
               .trimStart();
 
-            // 発話不要/不可能な文字列だった場合はスキップ
             if (
               !sentence.replace(
                 /^[\s\[\(\{「［（【『〈《〔｛«‹〘〚〛〙›»〕》〉』】）］」\}\)\]]+$/g,
@@ -241,7 +223,6 @@ export default function Home() {
             const aiTalks = textsToScreenplay([aiText], koeiroParam);
             aiTextLog += aiText;
 
-            // 文ごとに音声を生成 & 再生、返答を表示
             const currentAssistantMessage = sentences.join(" ");
             handleSpeakAi(aiTalks[0], elevenLabsKey, elevenLabsParam, () => {
               setAssistantMessage(currentAssistantMessage);
@@ -255,7 +236,6 @@ export default function Home() {
         reader.releaseLock();
       }
 
-      // アシスタントの返答をログに追加
       const messageLogAssistant: Message[] = [
         ...messageLog,
         { role: "assistant", content: aiTextLog },
@@ -264,14 +244,13 @@ export default function Home() {
       setChatLog(messageLogAssistant);
       setChatProcessing(false);
     },
-    [systemPrompt, chatLog, handleSpeakAi, openAiKey, elevenLabsKey, elevenLabsParam, claudeKey]
+    [systemPrompt, chatLog, handleSpeakAi, elevenLabsKey, elevenLabsParam, apiKey]
   );
 
   const handleTokensUpdate = useCallback((tokens: any) => {
     setRestreamTokens(tokens);
   }, []);
 
-  // Set up global websocket handler
   useEffect(() => {
     websocketService.setLLMCallback(async (message: string): Promise<LLMCallbackResult> => {
       try {
@@ -297,10 +276,10 @@ export default function Home() {
     });
   }, [handleSendChat, chatProcessing, isPlayingAudio, isAISpeaking]);
 
-  const handleClaudeKeyChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleApiKeyChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const newKey = event.target.value;
-    setClaudeKey(newKey);
-    localStorage.setItem('claudeKey', newKey);
+    setApiKey(newKey);
+    localStorage.setItem('apiKey', newKey);
   };
 
   return (
