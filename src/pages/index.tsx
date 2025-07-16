@@ -321,38 +321,90 @@ export default function Home() {
         top: '20px', 
         left: '20px', 
         zIndex: 1000,
-        display: 'flex',
+        display: 'grid',
         gap: '10px',
         alignItems: 'center'
       }}>
-        <span style={{ color: 'white', fontSize: '14px' }}>Avatar:</span>
         <button
           onClick={() => handleVrmChange(1)}
           style={{
-            padding: '8px 12px',
+            padding: '0',
             backgroundColor: selectedVrm === 1 ? '#4CAF50' : '#666',
-            color: 'white',
-            border: 'none',
-            borderRadius: '4px',
+            border: selectedVrm === 1 ? '3px solid #4CAF50' : '3px solid #666',
+            borderRadius: '8px',
             cursor: 'pointer',
-            fontSize: '12px'
+            width: '50px',
+            height: '50px',
+            overflow: 'hidden',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center'
           }}
         >
-          1
+          <img
+            src="/og.png"
+            alt="VRM 1"
+            style={{
+              width: '100%',
+              height: '100%',
+              objectFit: 'cover',
+              borderRadius: '4px'
+            }}
+          />
         </button>
         <button
           onClick={() => handleVrmChange(2)}
           style={{
-            padding: '8px 12px',
+            padding: '0',
             backgroundColor: selectedVrm === 2 ? '#4CAF50' : '#666',
-            color: 'white',
-            border: 'none',
-            borderRadius: '4px',
+            border: selectedVrm === 2 ? '3px solid #4CAF50' : '3px solid #666',
+            borderRadius: '8px',
             cursor: 'pointer',
-            fontSize: '12px'
+            width: '50px',
+            height: '50px',
+            overflow: 'hidden',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center'
           }}
         >
-          2
+          <img
+            src="/og2.png"
+            alt="VRM 2"
+            style={{
+              width: '100%',
+              height: '100%',
+              objectFit: 'cover',
+              borderRadius: '4px'
+            }}
+          />
+        </button>
+        <button
+          onClick={() => handleVrmChange(3)}
+          style={{
+            padding: '0',
+            backgroundColor: selectedVrm === 3 ? '#4CAF50' : '#666',
+            border: selectedVrm === 3 ? '3px solid #4CAF50' : '3px solid #666',
+            borderRadius: '8px',
+            cursor: 'pointer',
+            width: '50px',
+            height: '50px',
+            overflow: 'hidden',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center'
+          }}
+        >
+          <img
+            src="/og3.png"
+            alt="VRM 3"
+            style={{
+              width: '100%',
+              height: '100%',
+              objectFit: 'cover',
+              borderRadius: '4px'
+            }}
+          />
         </button>
       </div>
 

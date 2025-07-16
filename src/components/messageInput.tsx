@@ -23,10 +23,10 @@ export const MessageInput = ({
   onClickSendButton,
 }: Props) => {
   const templateMessages = [
-    "make me feel better",
-    "do I turn you on?", 
-    "fuck yea",
-    "roleplay like my gf"
+    "what's up",
+    "tell me a joke", 
+    "who are you?",
+    "go wild"
   ];
 
   const handleTemplateClick = (template: string) => {

@@ -22,6 +22,20 @@ export default function VrmViewer({ selectedVrm }: VrmViewerProps) {
 
   const AVATAR_SAMPLE_B_VRM_URL = "agi.vrm";
   const AVATAR_SAMPLE_2_VRM_URL = "agi2.vrm";
+  const AVATAR_SAMPLE_3_VRM_URL = "agi3.vrm";
+
+  const getVrmUrl = (vrmNumber: number) => {
+    switch (vrmNumber) {
+      case 1:
+        return AVATAR_SAMPLE_B_VRM_URL;
+      case 2:
+        return AVATAR_SAMPLE_2_VRM_URL;
+      case 3:
+        return AVATAR_SAMPLE_3_VRM_URL;
+      default:
+        return AVATAR_SAMPLE_B_VRM_URL;
+    }
+  };
 
   const canvasRef = useCallback(
     (canvas: HTMLCanvasElement) => {
@@ -29,7 +43,7 @@ export default function VrmViewer({ selectedVrm }: VrmViewerProps) {
         viewer.setup(canvas);
         
         // Load initial VRM based on selection
-        const initialVrmUrl = selectedVrm === 1 ? AVATAR_SAMPLE_B_VRM_URL : AVATAR_SAMPLE_2_VRM_URL;
+        const initialVrmUrl = getVrmUrl(selectedVrm);
         viewer.loadVrm(buildUrl(initialVrmUrl));
 
         // Drag and Drop VRM replacement
@@ -54,7 +68,7 @@ export default function VrmViewer({ selectedVrm }: VrmViewerProps) {
   // Effect to handle VRM changes
   useEffect(() => {
     if (viewer) {
-      const vrmUrl = selectedVrm === 1 ? AVATAR_SAMPLE_B_VRM_URL : AVATAR_SAMPLE_2_VRM_URL;
+      const vrmUrl = getVrmUrl(selectedVrm);
       viewer.loadVrm(buildUrl(vrmUrl));
     }
   }, [selectedVrm, viewer]);

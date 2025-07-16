@@ -37,7 +37,7 @@ export const CopyToClipboard = ({ textToCopy }: Props) => {
   return (
     <div className="absolute top-4 right-4 z-50">
       <motion.button
-        className="flex items-center justify-center p-4 rounded-md focus:outline-none bg-gray-800 text-[#CCCCCC] text-xs"
+        className="flex items-center justify-center p-4 rounded-md focus:outline-none bg-gray-800 text-[#CCCCCC] text-[10px]"
         onClick={handleCopy}
         whileTap={{ scale: 0.95 }}
       >
@@ -50,7 +50,7 @@ export const CopyToClipboard = ({ textToCopy }: Props) => {
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.8 }}
               >
-                <Check size={16} />
+                <Check size={12} />
               </motion.div>
             ) : (
               <motion.div
@@ -59,7 +59,7 @@ export const CopyToClipboard = ({ textToCopy }: Props) => {
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.8 }}
               >
-                <Copy size={16} />
+                <Copy size={12} />
               </motion.div>
             )}
           </AnimatePresence>
