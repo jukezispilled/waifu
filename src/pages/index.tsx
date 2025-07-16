@@ -358,8 +358,8 @@ export default function Home() {
           onClick={() => handleVrmChange(2)}
           style={{
             padding: '0',
-            backgroundColor: selectedVrm === 2 ? '#4CAF50' : '#666',
-            border: selectedVrm === 2 ? '3px solid #4CAF50' : '3px solid #666',
+            backgroundColor: selectedVrm === 2 ? '#1D9BF0' : '#666',
+            border: selectedVrm === 2 ? '3px solid #1D9BF0' : '3px solid #666',
             borderRadius: '8px',
             cursor: 'pointer',
             width: '50px',
@@ -385,8 +385,8 @@ export default function Home() {
           onClick={() => handleVrmChange(3)}
           style={{
             padding: '0',
-            backgroundColor: selectedVrm === 3 ? '#4CAF50' : '#666',
-            border: selectedVrm === 3 ? '3px solid #4CAF50' : '3px solid #666',
+            backgroundColor: selectedVrm === 3 ? '#1D9BF0' : '#666',
+            border: selectedVrm === 3 ? '3px solid #1D9BF0' : '3px solid #666',
             borderRadius: '8px',
             cursor: 'pointer',
             width: '50px',
