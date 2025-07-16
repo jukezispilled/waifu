@@ -49,6 +49,7 @@ export default function Home() {
   const [isPlayingAudio, setIsPlayingAudio] = useState(false);
   // needed because AI speaking could involve multiple audios being played in sequence
   const [isAISpeaking, setIsAISpeaking] = useState(false);
+  const [selectedVrm, setSelectedVrm] = useState<number>(1); // New state for VRM selection
   const [openRouterKey, setOpenRouterKey] = useState<string>(() => {
     // Try to load from localStorage on initial render
     if (typeof window !== 'undefined') {
@@ -76,6 +77,11 @@ export default function Home() {
     if (savedBackground) {
       setBackgroundImage(savedBackground);
     }
+    // Load saved VRM selection
+    const savedVrm = localStorage.getItem('selectedVrm');
+    if (savedVrm) {
+      setSelectedVrm(parseInt(savedVrm));
+    }
   }, []);
 
   useEffect(() => {
@@ -87,9 +93,11 @@ export default function Home() {
 
       // store separately to be backward compatible with local storage data
       window.localStorage.setItem("elevenLabsKey", elevenLabsKey);
+      // Save VRM selection
+      window.localStorage.setItem("selectedVrm", selectedVrm.toString());
     }
     );
-  }, [systemPrompt, elevenLabsParam, chatLog]);
+  }, [systemPrompt, elevenLabsParam, chatLog, selectedVrm]);
 
   const handleChangeChatLog = useCallback(
     (targetIndex: number, text: string) => {
@@ -299,10 +307,56 @@ export default function Home() {
     localStorage.setItem('openRouterKey', newKey);
   };
 
+  const handleVrmChange = (vrmNumber: number) => {
+    setSelectedVrm(vrmNumber);
+  };
+
   return (
     <div className={inter.className}>
       <Meta />
-      <VrmViewer />
+      
+      {/* VRM Selector in top left */}
+      <div style={{ 
+        position: 'fixed', 
+        top: '20px', 
+        left: '20px', 
+        zIndex: 1000,
+        display: 'flex',
+        gap: '10px',
+        alignItems: 'center'
+      }}>
+        <span style={{ color: 'white', fontSize: '14px' }}>Avatar:</span>
+        <button
+          onClick={() => handleVrmChange(1)}
+          style={{
+            padding: '8px 12px',
+            backgroundColor: selectedVrm === 1 ? '#4CAF50' : '#666',
+            color: 'white',
+            border: 'none',
+            borderRadius: '4px',
+            cursor: 'pointer',
+            fontSize: '12px'
+          }}
+        >
+          1
+        </button>
+        <button
+          onClick={() => handleVrmChange(2)}
+          style={{
+            padding: '8px 12px',
+            backgroundColor: selectedVrm === 2 ? '#4CAF50' : '#666',
+            color: 'white',
+            border: 'none',
+            borderRadius: '4px',
+            cursor: 'pointer',
+            fontSize: '12px'
+          }}
+        >
+          2
+        </button>
+      </div>
+
+      <VrmViewer selectedVrm={selectedVrm} />
       <CopyToClipboard textToCopy="XXXXXXXXXXXXXXXX" />
       <div className="">
         <MessageInputContainer
