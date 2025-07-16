@@ -30,7 +30,7 @@ export async function getChatResponseStream(
           },
           body: JSON.stringify({
             messages: claudeMessages,
-            model: "claude-3-5-sonnet-20241022", // or "claude-3-opus-20240229"
+            model: "claude-4-sonnet", // or "claude-3-opus-20240229"
             maxTokens: 200,
             temperature: 0.7
             // No apiKey needed - it's handled server-side via environment variable
