@@ -9,7 +9,7 @@ export async function getChatResponse(messages: Message[], apiKey: string) {
 export async function getChatResponseStream(
   messages: Message[], 
   apiKey: string, // This is now your Claude API key
-  openRouterKey: string // Keep for backwards compatibility, but won't be used
+  openRouterKey: string // Keep for backwards compatibility, but won't be used ok
 ) {
   if (!apiKey) {
     throw new Error("Invalid Claude API Key");
