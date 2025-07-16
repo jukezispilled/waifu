@@ -7,7 +7,7 @@ import { ElevenLabsParam } from "../constants/elevenLabsParam";
 
 // Define the expected response type from synthesizeVoice
 interface TTSResponse {
-  audio: string;  // URL or base64 string of the audio
+  audio: string; // URL or base64 string of the audio
 }
 
 interface Callback {
@@ -23,6 +23,7 @@ const createSpeakCharacter = () => {
     screenplay: Screenplay,
     elevenLabsKey: string,
     elevenLabsParam: ElevenLabsParam,
+    selectedVrm: number, // Add this parameter
     viewer: Viewer,
     onStart?: Callback,
     onComplete?: Callback
@@ -35,7 +36,8 @@ const createSpeakCharacter = () => {
       const buffer = await fetchAudio(
         screenplay.talk,
         elevenLabsKey,
-        elevenLabsParam
+        elevenLabsParam,
+        selectedVrm // Pass the selected VRM
       ).catch(() => null);
       lastTime = Date.now();
       return buffer;
@@ -63,11 +65,12 @@ export const speakCharacter = createSpeakCharacter();
 export const fetchAudio = async (
   talk: Talk,
   elevenLabsKey: string,
-  elevenLabsParam: ElevenLabsParam
+  elevenLabsParam: ElevenLabsParam,
+  selectedVrm: number // Add this parameter
 ): Promise<ArrayBuffer> => {
   try {
-    // Ensure synthesizeVoice returns a base64 string
-    const audioBase64 = await synthesizeVoice(talk.message);
+    // Pass the selectedVrm to synthesizeVoice
+    const audioBase64 = await synthesizeVoice(talk.message, selectedVrm);
 
     if (!audioBase64) {
       throw new Error("Invalid response from synthesizeVoice");

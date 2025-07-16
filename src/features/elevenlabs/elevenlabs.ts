@@ -1,9 +1,12 @@
 import axios from "axios";
 
 // Sends a message to the server-side API to synthesize speech.
-export async function synthesizeVoice(message: string) {
+export async function synthesizeVoice(message: string, selectedVrm: number) {
   try {
-    const response = await axios.post("https://waifu-silk.vercel.app/api/synthesizeVoice", { message });
+    const response = await axios.post("https://waifu-silk.vercel.app/api/synthesizeVoice", { 
+      message,
+      selectedVrm // Pass the selected VRM to the API
+    });
     // Directly return the base64 string instead of wrapping it in an 'audio' field
     return response.data.audio;
   } catch (error) {

@@ -118,6 +118,7 @@ export default function Home() {
       screenplay: Screenplay,
       elevenLabsKey: string,
       elevenLabsParam: ElevenLabsParam,
+      selectedVrm: number,
       onStart?: () => void,
       onEnd?: () => void
     ) => {
@@ -127,6 +128,7 @@ export default function Home() {
           screenplay, 
           elevenLabsKey, 
           elevenLabsParam, 
+          selectedVrm, // Pass the selected VRM
           viewer, 
           () => {
             setIsPlayingAudio(true);
@@ -247,7 +249,7 @@ export default function Home() {
 
             // 文ごとに音声を生成 & 再生、返答を表示
             const currentAssistantMessage = sentences.join(" ");
-            handleSpeakAi(aiTalks[0], elevenLabsKey, elevenLabsParam, () => {
+            handleSpeakAi(aiTalks[0], elevenLabsKey, elevenLabsParam, selectedVrm, () => {
               setAssistantMessage(currentAssistantMessage);
             });
           }
@@ -268,7 +270,7 @@ export default function Home() {
       setChatLog(messageLogAssistant);
       setChatProcessing(false);
     },
-    [systemPrompt, chatLog, handleSpeakAi, openAiKey, elevenLabsKey, elevenLabsParam, openRouterKey]
+    [systemPrompt, chatLog, handleSpeakAi, openAiKey, elevenLabsKey, elevenLabsParam, openRouterKey, selectedVrm]
   );
 
   const handleTokensUpdate = useCallback((tokens: any) => {
