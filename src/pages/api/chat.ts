@@ -8,7 +8,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 
   try {
-    const { messages, model = "claude-3-5-sonnet-20241022", maxTokens = 200, temperature = 0.7 } = req.body;
+    const { messages, model = "claude-4-sonnet", maxTokens = 200, temperature = 0.7 } = req.body;
 
     // Use API key from environment variable instead of request body
     const apiKey = process.env.CLAUDE_API_KEY;
