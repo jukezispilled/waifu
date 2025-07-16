@@ -408,6 +408,33 @@ export default function Home() {
             }}
           />
         </button>
+        <button
+          onClick={() => handleVrmChange(4)}
+          style={{
+            padding: '0',
+            backgroundColor: selectedVrm === 4 ? '#1D9BF0' : '#666',
+            border: selectedVrm === 4 ? '3px solid #1D9BF0' : '3px solid #666',
+            borderRadius: '8px',
+            cursor: 'pointer',
+            width: '50px',
+            height: '50px',
+            overflow: 'hidden',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center'
+          }}
+        >
+          <img
+            src="/og4.png"
+            alt="VRM 4"
+            style={{
+              width: '100%',
+              height: '100%',
+              objectFit: 'cover',
+              borderRadius: '4px'
+            }}
+          />
+        </button>
         
         {/* Add New VRM Button */}
         <div style={{ position: 'relative' }}>
