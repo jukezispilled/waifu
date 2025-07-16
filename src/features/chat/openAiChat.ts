@@ -8,7 +8,7 @@ export async function getChatResponse(messages: Message[], apiKey: string) {
 
 export async function getChatResponseStream(
   messages: Message[], 
-  apiKey: string, // This will now be your Claude API key
+  apiKey: string, // This is now your Claude API key
   openRouterKey: string // Keep for backwards compatibility, but won't be used
 ) {
   if (!apiKey) {
@@ -26,24 +26,24 @@ export async function getChatResponseStream(
           content: msg.content
         }));
 
-        const generation = await fetch("https://api.anthropic.com/v1/messages", {
+        // Call your Next.js API route instead of Claude directly
+        const generation = await fetch("/api/chat", {
           method: "POST",
           headers: {
-            "Authorization": `Bearer ${apiKey}`,
-            "Content-Type": "application/json",
-            "anthropic-version": "2023-06-01"
+            "Content-Type": "application/json"
           },
           body: JSON.stringify({
-            model: "claude-3-5-sonnet-20241022", // or "claude-3-opus-20240229"
             messages: claudeMessages,
-            max_tokens: 200,
-            temperature: 0.7,
-            stream: true,
+            apiKey: apiKey,
+            model: "claude-3-5-sonnet-20241022", // or "claude-3-opus-20240229"
+            maxTokens: 200,
+            temperature: 0.7
           })
         });
 
         if (!generation.ok) {
-          throw new Error(`Claude API error: ${generation.status} ${generation.statusText}`);
+          const errorData = await generation.json().catch(() => ({ error: 'Unknown error' }));
+          throw new Error(`API error: ${generation.status} ${generation.statusText} - ${errorData.error || ''}`);
         }
 
         if (generation.body) {
