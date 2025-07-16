@@ -27,7 +27,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     return res.status(400).json({ error: "A valid 'message' field is required" });
   }
 
-  if (!selectedVrm || ![1, 2, 3].includes(selectedVrm)) {
+  if (!selectedVrm || ![1, 2, 3, 4].includes(selectedVrm)) {
     return res.status(400).json({ error: "A valid 'selectedVrm' field (1, 2, or 3) is required" });
   }
 
