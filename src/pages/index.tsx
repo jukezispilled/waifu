@@ -408,6 +408,58 @@ export default function Home() {
             }}
           />
         </button>
+        
+        {/* Add New VRM Button */}
+        <div style={{ position: 'relative' }}>
+          <button
+            disabled
+            style={{
+              padding: '0',
+              backgroundColor: '#333',
+              border: '3px solid #333',
+              borderRadius: '8px',
+              cursor: 'not-allowed',
+              width: '50px',
+              height: '50px',
+              overflow: 'hidden',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              opacity: 0.6
+            }}
+          >
+            <svg 
+              width="24" 
+              height="24" 
+              viewBox="0 0 24 24" 
+              fill="none" 
+              stroke="#999" 
+              strokeWidth="2" 
+              strokeLinecap="round" 
+              strokeLinejoin="round"
+            >
+              <line x1="12" y1="5" x2="12" y2="19"></line>
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+            </svg>
+          </button>
+          
+          {/* Soon Tag */}
+          <div style={{
+            position: 'absolute',
+            top: '-5px',
+            right: '-5px',
+            backgroundColor: '#364153',
+            color: 'white',
+            fontSize: '6px',
+            fontWeight: 'bold',
+            padding: '1px 3px',
+            borderRadius: '10px',
+            textTransform: 'uppercase',
+            letterSpacing: '0.5px'
+          }}>
+            Soon
+          </div>
+        </div>
       </div>
 
       <VrmViewer selectedVrm={selectedVrm} />
