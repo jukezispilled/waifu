@@ -2,9 +2,9 @@ import { buildUrl } from "@/utils/buildUrl";
 import Head from "next/head";
 
 export const Meta = () => {
-  const title = "agi | artificial goon intelligence";
+  const title = "agi | artificial intelligence";
   const description =
-    "artificial gooning intelligence";
+    "artificial intelligence";
   const imageUrl = "/d.png";
   const faviconUrl = "/d.ico";  // Replace with your favicon path if different
 

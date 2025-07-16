@@ -329,8 +329,8 @@ export default function Home() {
           onClick={() => handleVrmChange(1)}
           style={{
             padding: '0',
-            backgroundColor: selectedVrm === 1 ? '#4CAF50' : '#666',
-            border: selectedVrm === 1 ? '3px solid #4CAF50' : '3px solid #666',
+            backgroundColor: selectedVrm === 1 ? '#1D9BF0' : '#666',
+            border: selectedVrm === 1 ? '3px solid #1D9BF0' : '3px solid #666',
             borderRadius: '8px',
             cursor: 'pointer',
             width: '50px',
