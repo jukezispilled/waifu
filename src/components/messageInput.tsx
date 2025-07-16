@@ -145,7 +145,7 @@ export const MessageInput = ({
 
         <input
           type="text"
-          placeholder="AGI is here..."
+          placeholder="speak to your fren"
           value={userMessage}
           onChange={onChangeUserMessage}
           onKeyDown={onKeyDownUserMessage}
