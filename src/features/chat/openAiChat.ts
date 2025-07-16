@@ -23,7 +23,7 @@ export async function getChatResponseStream(
         }));
 
         // Call your Next.js API route - no API key needed since it's in the environment
-        const generation = await fetch("/api/claude/chat", {
+        const generation = await fetch("/api/chat", {
           method: "POST",
           headers: {
             "Content-Type": "application/json"
