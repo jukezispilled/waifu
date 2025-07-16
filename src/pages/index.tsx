@@ -37,14 +37,6 @@ export default function Home() {
   const { viewer } = useContext(ViewerContext);
 
   const [systemPrompt, setSystemPrompt] = useState(SYSTEM_PROMPT);
-  const [apiKey, setApiKey] = useState<string>(() => {
-    // Try to load from localStorage first, then fallback to env variable
-    if (typeof window !== 'undefined') {
-      const savedKey = localStorage.getItem('apiKey') || localStorage.getItem('claudeKey'); // Support both for migration
-      if (savedKey) return savedKey;
-    }
-    return process.env.NEXT_PUBLIC_CLAUDE_API_KEY || '';
-  });
   const [elevenLabsKey, setElevenLabsKey] = useState("");
   const [elevenLabsParam, setElevenLabsParam] = useState<ElevenLabsParam>(DEFAULT_ELEVEN_LABS_PARAM);
   const [koeiroParam, setKoeiroParam] = useState<KoeiroParam>(DEFAULT_KOEIRO_PARAM);
@@ -66,19 +58,6 @@ export default function Home() {
       setChatLog(params.chatLog);
     }
     setElevenLabsKey(process.env.ELEVENLABS_API_KEY as string);
-    
-    // Load API key from localStorage, fallback to env
-    const savedApiKey = localStorage.getItem('apiKey') || localStorage.getItem('claudeKey'); // Support migration
-    if (savedApiKey) {
-      setApiKey(savedApiKey);
-      // Migrate old claudeKey to apiKey
-      if (localStorage.getItem('claudeKey') && !localStorage.getItem('apiKey')) {
-        localStorage.setItem('apiKey', savedApiKey);
-        localStorage.removeItem('claudeKey');
-      }
-    } else if (process.env.NEXT_PUBLIC_CLAUDE_API_KEY) {
-      setApiKey(process.env.NEXT_PUBLIC_CLAUDE_API_KEY);
-    }
     
     const savedBackground = localStorage.getItem('backgroundImage');
     if (savedBackground) {
@@ -162,13 +141,8 @@ export default function Home() {
         ...messageLog,
       ]);
 
-      if (!apiKey) {
-        console.error('No API key provided');
-        setChatProcessing(false);
-        return;
-      }
-
-      const stream = await getChatResponseStream(processedMessages, apiKey, "").catch(
+      // No need to check for API key - it's handled server-side
+      const stream = await getChatResponseStream(processedMessages, "", "").catch(
         (e) => {
           console.error(e);
           return null;
@@ -244,7 +218,7 @@ export default function Home() {
       setChatLog(messageLogAssistant);
       setChatProcessing(false);
     },
-    [systemPrompt, chatLog, handleSpeakAi, elevenLabsKey, elevenLabsParam, apiKey]
+    [systemPrompt, chatLog, handleSpeakAi, elevenLabsKey, elevenLabsParam]
   );
 
   const handleTokensUpdate = useCallback((tokens: any) => {
@@ -270,17 +244,11 @@ export default function Home() {
         console.error('Error processing message:', error);
         return {
           processed: false,
-          error: error instanceof Error ? error.message : 'Unknown error occurred'
+          error: error instanceof Error ? error.message : 'Unknown error'
         };
       }
     });
   }, [handleSendChat, chatProcessing, isPlayingAudio, isAISpeaking]);
-
-  const handleApiKeyChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const newKey = event.target.value;
-    setApiKey(newKey);
-    localStorage.setItem('apiKey', newKey);
-  };
 
   return (
     <div className={inter.className}>

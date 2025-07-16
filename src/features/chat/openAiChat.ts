@@ -8,13 +8,9 @@ export async function getChatResponse(messages: Message[], apiKey: string) {
 
 export async function getChatResponseStream(
   messages: Message[], 
-  apiKey: string, // This is now your Claude API key
-  openRouterKey: string // Keep for backwards compatibility, but won't be used ok
+  apiKey: string, // Keep for backwards compatibility but not used
+  openRouterKey: string // Keep for backwards compatibility but not used
 ) {
-  if (!apiKey) {
-    throw new Error("Invalid Claude API Key");
-  }
-
   const stream = new ReadableStream({
     async start(controller: ReadableStreamDefaultController) {
       try {
@@ -26,18 +22,18 @@ export async function getChatResponseStream(
           content: msg.content
         }));
 
-        // Call your Next.js API route instead of Claude directly
-        const generation = await fetch("/api/chat", {
+        // Call your Next.js API route - no API key needed since it's in the environment
+        const generation = await fetch("/api/claude/chat", {
           method: "POST",
           headers: {
             "Content-Type": "application/json"
           },
           body: JSON.stringify({
             messages: claudeMessages,
-            apiKey: apiKey,
             model: "claude-3-5-sonnet-20241022", // or "claude-3-opus-20240229"
             maxTokens: 200,
             temperature: 0.7
+            // No apiKey needed - it's handled server-side via environment variable
           })
         });
 
