@@ -26,7 +26,8 @@ export const MessageInput = ({
     "what's up",
     "tell me a joke", 
     "who are you?",
-    "go wild"
+    "go wild",
+    "plan the future"
   ];
 
   const handleTemplateClick = (template: string) => {
