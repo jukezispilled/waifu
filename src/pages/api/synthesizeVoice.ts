@@ -6,7 +6,7 @@ import axios, { AxiosRequestConfig, ResponseType } from "axios";
 const VOICE_IDS = {
   1: "XJ2fW4ybq7HouelYYGcL", // Current voice ID for VRM 1
   2: "2bk7ULW9HfwvcIbMWod0",    // Replace with actual voice ID for VRM 2
-  3: "Xb3zeLrTi6F4ziIcXdwk",    // Replace with actual voice ID for VRM 3
+  3: "tJHJUEHzOkMoPmJJ5jo2",    // Replace with actual voice ID for VRM 3
 };
 
 const API_KEY = process.env.ELEVENLABS_API_KEY;
