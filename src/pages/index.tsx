@@ -37,7 +37,7 @@ export default function Home() {
   const { viewer } = useContext(ViewerContext);
 
   const [systemPrompt, setSystemPrompt] = useState(SYSTEM_PROMPT);
-  const [openAiKey, setOpenAiKey] = useState("");
+  const [openAiKey, setOpenAiKey] = useState(""); // Keep this for backwards compatibility if needed
   const [elevenLabsKey, setElevenLabsKey] = useState("");
   const [elevenLabsParam, setElevenLabsParam] = useState<ElevenLabsParam>(DEFAULT_ELEVEN_LABS_PARAM);
   const [koeiroParam, setKoeiroParam] = useState<KoeiroParam>(DEFAULT_KOEIRO_PARAM);
@@ -49,12 +49,13 @@ export default function Home() {
   const [isPlayingAudio, setIsPlayingAudio] = useState(false);
   // needed because AI speaking could involve multiple audios being played in sequence
   const [isAISpeaking, setIsAISpeaking] = useState(false);
-  const [openRouterKey, setOpenRouterKey] = useState<string>(() => {
-    // Try to load from localStorage on initial render
+  const [claudeKey, setClaudeKey] = useState<string>(() => {
+    // Try to load from localStorage first, then fallback to env variable
     if (typeof window !== 'undefined') {
-      return localStorage.getItem('openRouterKey') || '';
+      const savedKey = localStorage.getItem('claudeKey');
+      if (savedKey) return savedKey;
     }
-    return '';
+    return process.env.NEXT_PUBLIC_CLAUDE_API_KEY || '';
   });
 
   useEffect(() => {
@@ -67,11 +68,15 @@ export default function Home() {
       setChatLog(params.chatLog);
     }
     setElevenLabsKey(process.env.ELEVENLABS_API_KEY as string);
-    // load openrouter key from localStorage
-    const savedOpenRouterKey = localStorage.getItem('openRouterKey');
-    if (savedOpenRouterKey) {
-      setOpenRouterKey(savedOpenRouterKey);
+    
+    // Load claude key from localStorage, fallback to env
+    const savedClaudeKey = localStorage.getItem('claudeKey');
+    if (savedClaudeKey) {
+      setClaudeKey(savedClaudeKey);
+    } else if (process.env.NEXT_PUBLIC_CLAUDE_API_KEY) {
+      setClaudeKey(process.env.NEXT_PUBLIC_CLAUDE_API_KEY);
     }
+    
     const savedBackground = localStorage.getItem('backgroundImage');
     if (savedBackground) {
       setBackgroundImage(savedBackground);
@@ -166,13 +171,15 @@ export default function Home() {
         ...messageLog,
       ]);
 
-      let localOpenRouterKey = openRouterKey;
-      if (!localOpenRouterKey) {
-        // fallback to free key for users to try things out
-        localOpenRouterKey = process.env.NEXT_PUBLIC_OPENROUTER_API_KEY!;
+      let localClaudeKey = claudeKey;
+      if (!localClaudeKey) {
+        console.error('No Claude API key provided');
+        setChatProcessing(false);
+        return;
       }
 
-      const stream = await getChatResponseStream(processedMessages, openAiKey, localOpenRouterKey).catch(
+      // Now pass claudeKey as the main apiKey parameter, and empty string for the unused openRouterKey
+      const stream = await getChatResponseStream(processedMessages, localClaudeKey, "").catch(
         (e) => {
           console.error(e);
           return null;
@@ -194,9 +201,6 @@ export default function Home() {
           if (done) break;
 
           receivedMessage += value;
-
-          // console.log('receivedMessage');
-          // console.log(receivedMessage);
 
           // 返答内容のタグ部分の検出
           const tagMatch = receivedMessage.match(/^\[(.*?)\]/);
@@ -260,7 +264,7 @@ export default function Home() {
       setChatLog(messageLogAssistant);
       setChatProcessing(false);
     },
-    [systemPrompt, chatLog, handleSpeakAi, openAiKey, elevenLabsKey, elevenLabsParam, openRouterKey]
+    [systemPrompt, chatLog, handleSpeakAi, openAiKey, elevenLabsKey, elevenLabsParam, claudeKey]
   );
 
   const handleTokensUpdate = useCallback((tokens: any) => {
@@ -293,10 +297,10 @@ export default function Home() {
     });
   }, [handleSendChat, chatProcessing, isPlayingAudio, isAISpeaking]);
 
-  const handleOpenRouterKeyChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleClaudeKeyChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const newKey = event.target.value;
-    setOpenRouterKey(newKey);
-    localStorage.setItem('openRouterKey', newKey);
+    setClaudeKey(newKey);
+    localStorage.setItem('claudeKey', newKey);
   };
 
   return (
@@ -310,29 +314,6 @@ export default function Home() {
           onChatProcessStart={handleSendChat}
         />
       </div>
-      <Menu
-        openAiKey={openAiKey}
-        elevenLabsKey={elevenLabsKey}
-        openRouterKey={openRouterKey}
-        systemPrompt={systemPrompt}
-        chatLog={chatLog}
-        elevenLabsParam={elevenLabsParam}
-        koeiroParam={koeiroParam}
-        assistantMessage={assistantMessage}
-        onChangeAiKey={setOpenAiKey}
-        onChangeElevenLabsKey={setElevenLabsKey}
-        onChangeSystemPrompt={setSystemPrompt}
-        onChangeChatLog={handleChangeChatLog}
-        onChangeElevenLabsParam={setElevenLabsParam}
-        onChangeKoeiromapParam={setKoeiroParam}
-        handleClickResetChatLog={() => setChatLog([])}
-        handleClickResetSystemPrompt={() => setSystemPrompt(SYSTEM_PROMPT)}
-        backgroundImage={backgroundImage}
-        onChangeBackgroundImage={setBackgroundImage}
-        onTokensUpdate={handleTokensUpdate}
-        onChatMessage={handleSendChat}
-        onChangeOpenRouterKey={handleOpenRouterKeyChange}
-      />
       <GitHubLink />
     </div>
   );

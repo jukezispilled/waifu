@@ -4,74 +4,47 @@ import { getWindowAI } from 'window.ai';
 export async function getChatResponse(messages: Message[], apiKey: string) {
   // function currently not used
   throw new Error("Not implemented");
-
-  /*
-  if (!apiKey) {
-    throw new Error("Invalid API Key");
-  }
-
-  const configuration = new Configuration({
-    apiKey: apiKey,
-  });
-  // ブラウザからAPIを叩くときに発生するエラーを無くすworkaround
-  // https://github.com/openai/openai-node/issues/6#issuecomment-1492814621
-  delete configuration.baseOptions.headers["User-Agent"];
-
-  const openai = new OpenAIApi(configuration);
-
-  const { data } = await openai.createChatCompletion({
-    model: "gpt-3.5-turbo",
-    messages: messages,
-  });
-
-  const [aiRes] = data.choices;
-  const message = aiRes.message?.content || "エラーが発生しました";
-
-  return { message: message };
-  */
 }
 
 export async function getChatResponseStream(
-  messages: Message[], // Changed from string to Message[]
-  apiKey: string,
-  openRouterKey: string
+  messages: Message[], 
+  apiKey: string, // This will now be your Claude API key
+  openRouterKey: string // Keep for backwards compatibility, but won't be used
 ) {
-  // TODO: remove usages of apiKey in code
-  /*
   if (!apiKey) {
-    throw new Error("Invalid API Key");
+    throw new Error("Invalid Claude API Key");
   }
-  */
 
   const stream = new ReadableStream({
     async start(controller: ReadableStreamDefaultController) {
       try {
-
-        const OPENROUTER_API_KEY = openRouterKey;
-        const YOUR_SITE_URL = 'https://waifu-silk.vercel.app/';
-        const YOUR_SITE_NAME = 'ChatVRM';
-
         let isStreamed = false;
-        const generation = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+        
+        // Convert messages to Claude API format if needed
+        const claudeMessages = messages.map(msg => ({
+          role: msg.role,
+          content: msg.content
+        }));
+
+        const generation = await fetch("https://api.anthropic.com/v1/messages", {
           method: "POST",
           headers: {
-            "Authorization": `Bearer ${OPENROUTER_API_KEY}`,
-            "HTTP-Referer": `${YOUR_SITE_URL}`, // Optional, for including your app on openrouter.ai rankings.
-            "X-Title": `${YOUR_SITE_NAME}`, // Optional. Shows in rankings on openrouter.ai.
-            "Content-Type": "application/json"
+            "Authorization": `Bearer ${apiKey}`,
+            "Content-Type": "application/json",
+            "anthropic-version": "2023-06-01"
           },
           body: JSON.stringify({
-            // "model": "cohere/command",
-            // "model": "openai/gpt-3.5-turbo",
-            // "model": "cohere/command-r-plus",
-            // "model": "anthropic/claude-3.5-sonnet:beta",
-            "model": "x-ai/grok-3-mini",
-            "messages": messages, // Now using the messages array directly
-            "temperature": 0.7,
-            "max_tokens": 200,
-            "stream": true,
+            model: "claude-3-5-sonnet-20241022", // or "claude-3-opus-20240229"
+            messages: claudeMessages,
+            max_tokens: 200,
+            temperature: 0.7,
+            stream: true,
           })
         });
+
+        if (!generation.ok) {
+          throw new Error(`Claude API error: ${generation.status} ${generation.statusText}`);
+        }
 
         if (generation.body) {
           const reader = generation.body.getReader();
@@ -80,66 +53,52 @@ export async function getChatResponseStream(
               const { done, value } = await reader.read();
               if (done) break;
 
-              // Assuming the stream is text, convert the Uint8Array to a string
+              // Convert the Uint8Array to a string
               let chunk = new TextDecoder().decode(value);
-              // Process the chunk here (e.g., append it to the controller for streaming to the client)
-
-              // split the chunk into lines
+              
+              // Split the chunk into lines
               let lines = chunk.split('\n');
-
-              const SSE_COMMENT = ": OPENROUTER PROCESSING";
-
-              // filter out lines that start with SSE_COMMENT
-              lines = lines.filter((line) => !line.trim().startsWith(SSE_COMMENT));
-
-              // filter out lines that end with "data: [DONE]"
-              lines = lines.filter((line) => !line.trim().endsWith("data: [DONE]"));
 
               // Filter out empty lines and lines that do not start with "data:"
               const dataLines = lines.filter(line => line.startsWith("data:"));
 
               // Extract and parse the JSON from each data line
               const parsedMessages = dataLines.map(line => {
-                // Remove the "data: " prefix and parse the JSON
-                const jsonStr = line.substring(5); // "data: ".length == 5
-                return JSON.parse(jsonStr);
-              });
+                try {
+                  // Remove the "data: " prefix and parse the JSON
+                  const jsonStr = line.substring(5); // "data: ".length == 5
+                  return JSON.parse(jsonStr);
+                } catch (e) {
+                  return null; // Skip invalid JSON
+                }
+              }).filter(msg => msg !== null);
 
-              // loop through messages and enqueue them to the controller
-
+              // Process messages and enqueue content to the controller
               try {
                 parsedMessages.forEach((message) => {
-                  const content = message.choices[0].delta.content;
-
-                  controller.enqueue(content);
+                  // Claude API streaming format
+                  if (message.type === 'content_block_delta' && message.delta?.text) {
+                    controller.enqueue(message.delta.text);
+                  }
                 });
               } catch (error) {
-                // log error for debugging if needed
                 console.error('Error processing stream messages:', error);
                 throw error;
               }
-
-              // Parse the chunk as JSON
-              // const parsedChunk = JSON.parse(chunk);
-              // Access the content
-              // const content = parsedChunk.choices[0].delta.content;
-
-              // enqueue the content to the controller
-              // controller.enqueue(content);
 
               isStreamed = true;
             }
           } catch (error) {
             console.error('Error reading the stream', error);
+            throw error;
           } finally {
             reader.releaseLock();
           }
         }
 
-        // handle case where streaming is not supported
+        // Handle case where streaming is not supported
         if (!isStreamed) {
           console.error('Streaming not supported! Need to handle this case.');
-          // controller.enqueue(response[0].message.content);
         }
       } catch (error) {
         controller.error(error);
