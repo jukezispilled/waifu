@@ -49,22 +49,12 @@ export default function Home() {
   const [isPlayingAudio, setIsPlayingAudio] = useState(false);
   // needed because AI speaking could involve multiple audios being played in sequence
   const [isAISpeaking, setIsAISpeaking] = useState(false);
-  
-  // Replace OpenRouter with Ollama settings
-  const [ollamaUrl, setOllamaUrl] = useState<string>(() => {
+  const [openRouterKey, setOpenRouterKey] = useState<string>(() => {
     // Try to load from localStorage on initial render
     if (typeof window !== 'undefined') {
-      return localStorage.getItem('ollamaUrl') || 'https://a1a456ec6c27.ngrok-free.app';
+      return localStorage.getItem('openRouterKey') || '';
     }
-    return 'https://a1a456ec6c27.ngrok-free.app';
-  });
-  
-  const [ollamaModel, setOllamaModel] = useState<string>(() => {
-    // Try to load from localStorage on initial render
-    if (typeof window !== 'undefined') {
-      return localStorage.getItem('ollamaModel') || 'llama3.2';
-    }
-    return 'llama3.2';
+    return '';
   });
 
   useEffect(() => {
@@ -77,18 +67,11 @@ export default function Home() {
       setChatLog(params.chatLog);
     }
     setElevenLabsKey(process.env.ELEVENLABS_API_KEY as string);
-    
-    // Load Ollama settings from localStorage
-    const savedOllamaUrl = localStorage.getItem('ollamaUrl');
-    if (savedOllamaUrl) {
-      setOllamaUrl(savedOllamaUrl);
+    // load openrouter key from localStorage
+    const savedOpenRouterKey = localStorage.getItem('openRouterKey');
+    if (savedOpenRouterKey) {
+      setOpenRouterKey(savedOpenRouterKey);
     }
-    
-    const savedOllamaModel = localStorage.getItem('ollamaModel');
-    if (savedOllamaModel) {
-      setOllamaModel(savedOllamaModel);
-    }
-    
     const savedBackground = localStorage.getItem('backgroundImage');
     if (savedBackground) {
       setBackgroundImage(savedBackground);
@@ -183,13 +166,13 @@ export default function Home() {
         ...messageLog,
       ]);
 
-      // Use Ollama instead of OpenRouter
-      const stream = await getChatResponseStream(
-        processedMessages, 
-        openAiKey, // Keep for backward compatibility, but not used in Ollama
-        ollamaUrl,
-        ollamaModel
-      ).catch(
+      let localOpenRouterKey = openRouterKey;
+      if (!localOpenRouterKey) {
+        // fallback to free key for users to try things out
+        localOpenRouterKey = process.env.NEXT_PUBLIC_OPENROUTER_API_KEY!;
+      }
+
+      const stream = await getChatResponseStream(processedMessages, openAiKey, localOpenRouterKey).catch(
         (e) => {
           console.error(e);
           return null;
@@ -277,7 +260,7 @@ export default function Home() {
       setChatLog(messageLogAssistant);
       setChatProcessing(false);
     },
-    [systemPrompt, chatLog, handleSpeakAi, openAiKey, elevenLabsKey, elevenLabsParam, ollamaUrl, ollamaModel]
+    [systemPrompt, chatLog, handleSpeakAi, openAiKey, elevenLabsKey, elevenLabsParam, openRouterKey]
   );
 
   const handleTokensUpdate = useCallback((tokens: any) => {
@@ -310,17 +293,10 @@ export default function Home() {
     });
   }, [handleSendChat, chatProcessing, isPlayingAudio, isAISpeaking]);
 
-  // Replace OpenRouter handlers with Ollama handlers
-  const handleOllamaUrlChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const newUrl = event.target.value;
-    setOllamaUrl(newUrl);
-    localStorage.setItem('ollamaUrl', newUrl);
-  };
-
-  const handleOllamaModelChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const newModel = event.target.value;
-    setOllamaModel(newModel);
-    localStorage.setItem('ollamaModel', newModel);
+  const handleOpenRouterKeyChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const newKey = event.target.value;
+    setOpenRouterKey(newKey);
+    localStorage.setItem('openRouterKey', newKey);
   };
 
   return (
@@ -334,6 +310,29 @@ export default function Home() {
           onChatProcessStart={handleSendChat}
         />
       </div>
+      <Menu
+        openAiKey={openAiKey}
+        elevenLabsKey={elevenLabsKey}
+        openRouterKey={openRouterKey}
+        systemPrompt={systemPrompt}
+        chatLog={chatLog}
+        elevenLabsParam={elevenLabsParam}
+        koeiroParam={koeiroParam}
+        assistantMessage={assistantMessage}
+        onChangeAiKey={setOpenAiKey}
+        onChangeElevenLabsKey={setElevenLabsKey}
+        onChangeSystemPrompt={setSystemPrompt}
+        onChangeChatLog={handleChangeChatLog}
+        onChangeElevenLabsParam={setElevenLabsParam}
+        onChangeKoeiromapParam={setKoeiroParam}
+        handleClickResetChatLog={() => setChatLog([])}
+        handleClickResetSystemPrompt={() => setSystemPrompt(SYSTEM_PROMPT)}
+        backgroundImage={backgroundImage}
+        onChangeBackgroundImage={setBackgroundImage}
+        onTokensUpdate={handleTokensUpdate}
+        onChatMessage={handleSendChat}
+        onChangeOpenRouterKey={handleOpenRouterKeyChange}
+      />
       <GitHubLink />
     </div>
   );
